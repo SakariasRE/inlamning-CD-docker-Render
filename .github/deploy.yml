@@ -1,0 +1,42 @@
+
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Hämta koden
+        uses: actions/checkout@v4
+
+      - name: Installera Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Installera beroenden
+        run: npm ci
+
+      - name: Bygg React-appen
+        run: npm run build
+
+      - name: Bygg Docker-image
+        run: docker build -t uppgifter .
+
+      - name: Publicera på Render
+        env:
+          DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "Render Deploy Hook saknas"
+            exit 1
+          fi
+
+          curl --fail --show-error --silent \
+            --request POST "$DEPLOY_HOOK"

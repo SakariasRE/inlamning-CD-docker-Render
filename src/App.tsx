@@ -4,13 +4,14 @@ import Tasks from './pages/Tasks'
 import './App.css'
 
 function App() {
+    const appTitle = import.meta.env.VITE_APP_TITLE || 'Uppgifter'
     return (
         <BrowserRouter>
             <div className="app">
                 <aside className="sidebar">
                     <div className="logo">
                         <span className="logoIcon">✓</span>
-                        <span>Uppgifter</span>
+                        <span>{appTitle}</span>
                     </div>
 
                     <p className="menuTitle">MENY</p>
